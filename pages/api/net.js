@@ -7,7 +7,8 @@ export default function handler(req, res) {
       temp,
       time: new Date().toISOString()
     };
-    console.log("ESP gửi:", latestData);
+    console.log("ESP32 gửi nhiệt độ:", latestData);
+
     return res.status(200).json({ message: "Đã nhận", data: latestData });
   }
 
