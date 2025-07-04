@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Biểu đồ Nhiệt độ IoT</title>
+  <script src="https://code.highcharts.com/highcharts.js"></script>
+</head>
+<body>
+  <h2 style="text-align: center;">📈 Biểu đồ nhiệt độ từ ESP32</h2>
+  <div id="tempChart" style="width: 90%; height: 400px; margin: auto;"></div>
+
+  <script>
+    const chart = Highcharts.chart('tempChart', {
+      chart: { type: 'spline' },
+      title: { text: 'Nhiệt độ theo thời gian' },
+      xAxis: { type: 'datetime', title: { text: 'Thời gian' }},
+      yAxis: { title: { text: 'Nhiệt độ (°C)' }, min: 0 },
+      series: [{ name: 'Nhiệt độ', data: [] }]
+    });
+
+    async function fetchData() {
+      try {
+        const res = await fetch('/api/net');
+        const data = await res.json();
+        const time = new Date(data.time).getTime();
+        const temp = data.temp;
+        chart.series[0].addPoint([time, temp], true, chart.series[0].data.length >= 20);
+      } catch (err) {
+        console.error("Lỗi khi lấy dữ liệu:", err);
+      }
+    }
+
+    setInterval(fetchData, 5000);
+    fetchData();
+  </script>
+</body>
+</html>
